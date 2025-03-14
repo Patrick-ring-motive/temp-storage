@@ -1,1 +1,1 @@
-# temp-storage
+# shared-worker-storage
