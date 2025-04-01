@@ -81,14 +81,14 @@
             this.pendingRequests.delete(requestId);
           }
           generateId() {
-            return crypto.randomUUID?.() || Math.random().toString(36).slice(2);
+            return self.crypto?.randomUUID?.() || Math.random().toString(36).slice(2);
           }
           setItem(key, value) {
             sessionStorage.setItem(`~tempStorage~${key}`, value);
             return new Promise((resolve) => {
               const requestId = this.generateId();
               this.pendingRequests.set(requestId, resolve);
-              const tid = setTimeout(resolve,100);
+              const tid = setTimeout(resolve, 100);
               try {
                 this.port.postMessage({ requestId, type: 'SET', key, value });
               } catch (e) {
@@ -100,14 +100,14 @@
           }
           getItem(key) {
             return new Promise((resolve) => {
-              const tid = setTimeout(resolve,100);
+              const tid = setTimeout(resolve, 100);
               const requestId = this.generateId();
               this.pendingRequests.set(requestId, (msg) => {
                 let value = msg.value;
                 if (value == null) {
                   value = sessionStorage.getItem(`~tempStorage~${key}`);
-                }else{
-                  sessionStorage.setItem(`~tempStorage~${key}`,value);
+                } else {
+                  sessionStorage.setItem(`~tempStorage~${key}`, value);
                 }
                 if (value != null) {
                   tempStorage.setItem(key, value);
@@ -128,7 +128,7 @@
               sessionStorage.removeItem(`~tempStorage~${key}`);
               const requestId = this.generateId();
               this.pendingRequests.set(requestId, (msg) => resolve(msg.value));
-              const tid = setTimeout(resolve,100);
+              const tid = setTimeout(resolve, 100);
               try {
                 this.port.postMessage({ requestId, type: 'DELETE', key });
               } catch (e) {
