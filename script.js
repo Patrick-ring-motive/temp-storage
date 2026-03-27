@@ -41,10 +41,16 @@
         onconnect = (event) => {
           const port = [...event?.ports ?? []]?.shift?.();
           (port ?? self).onmessage = (e) => {
-            const { requestId, type, key, value } = e?.data ?? {};
+            const {
+              requestId,
+              type,
+              key,
+              value
+            } = e?.data ?? {};
             const respond = {
               SET: () => port.postMessage({
-                requestId, type: 'SET_RESULT',
+                requestId,
+                type: 'SET_RESULT',
                 success: store.set(key, value)
               }),
               GET: () => port.postMessage({
@@ -67,7 +73,7 @@
       })();
     } else {
       (() => {
-        const sharedWorker = new (self.SharedWorker ?? self.Worker)(`data:text/javascript,(${encodeURIComponent(SharedWorkerStorageScript)})();`);
+        const sharedWorker = new(self.SharedWorker ?? self.Worker)(`data:text/javascript,(${encodeURIComponent(SharedWorkerStorageScript)})();`);
         sharedWorker?.port?.start?.();
         class SharedWorkerStorage {
           constructor(port) {
@@ -76,8 +82,19 @@
             this.port.onmessage = (e) => this.onMessage(e);
           }
           onMessage(e) {
-            const { requestId, type, key, value, success } = e.data;
-            this.pendingRequests.get(requestId)?.({ type, key, value, success });
+            const {
+              requestId,
+              type,
+              key,
+              value,
+              success
+            } = e.data;
+            this.pendingRequests.get(requestId)?.({
+              type,
+              key,
+              value,
+              success
+            });
             this.pendingRequests.delete(requestId);
           }
           generateId() {
@@ -90,7 +107,12 @@
               this.pendingRequests.set(requestId, resolve);
               const tid = setTimeout(resolve, 100);
               try {
-                this.port.postMessage({ requestId, type: 'SET', key, value });
+                this.port.postMessage({
+                  requestId,
+                  type: 'SET',
+                  key,
+                  value
+                });
               } catch (e) {
                 resolve(null);
                 clearTimeout(tid);
@@ -115,7 +137,11 @@
                 resolve(value);
               });
               try {
-                this.port.postMessage({ requestId, type: 'GET', key });
+                this.port.postMessage({
+                  requestId,
+                  type: 'GET',
+                  key
+                });
               } catch (e) {
                 resolve(null);
                 clearTimeout(tid);
@@ -130,7 +156,11 @@
               this.pendingRequests.set(requestId, (msg) => resolve(msg.value));
               const tid = setTimeout(resolve, 100);
               try {
-                this.port.postMessage({ requestId, type: 'DELETE', key });
+                this.port.postMessage({
+                  requestId,
+                  type: 'DELETE',
+                  key
+                });
               } catch (e) {
                 resolve(null);
                 clearTimeout(tid);
@@ -144,4 +174,3 @@
     }
   })();
 })();
-
