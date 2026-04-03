@@ -13,17 +13,18 @@
   <script src="script.js"></script>
   <script>
     (async () => {
-    try {
-      console.log(tempStorage);
-      // Example usage
-      await tempStorage.setItem('favoriteColor', 'blue');
-      const color = await tempStorage.getItem('favoriteColor');
-      console.log('color', color); // "blue"
-    } catch (e) {
-      console.log(self, e);
-    }
-  })();
-</script>
+      try {
+        console.log(tempStorage);
+        // Example usage
+        await tempStorage.setItem('favoriteColor', 'blue');
+        const color = await tempStorage.getItem('favoriteColor');
+        console.log('color', color); // "blue"
+      } catch (e) {
+        console.log(self, e);
+      }
+    })();
+
+  </script>
 </body>
 
 </html>
